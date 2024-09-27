@@ -18,7 +18,7 @@ contract InitializePool is Script {
     address constant CLPOOLMANAGER = 0x969D90aC74A1a5228b66440f8C8326a8dA47A5F9;
     address constant mCAKE = 0x5e799ab7E65bB718B545C76Ac9E6E74fc880a1D0;
     address constant mUSDC = 0x7E421Eee45038D0Ea1aD51Aaf1e5784c4e0765D0;
-    address constant HOOK = 0x21aAE5bae1bfC9EEAc4F9fdC08D6F28f2193Ad4B;
+    address constant HOOK = 0xD517d30Da02f63cD57128A0E00268AEC40C3ea5c;
 
     ICLPoolManager manager = ICLPoolManager(CLPOOLMANAGER);
 
@@ -26,7 +26,6 @@ contract InitializePool is Script {
         address token0 = uint160(mUSDC) < uint160(mCAKE) ? mUSDC : mCAKE;
         address token1 = uint160(mUSDC) < uint160(mCAKE) ? mCAKE : mUSDC;
         uint24 swapFee = 4000;
-        int24 tickSpacing = 10;
 
         uint160 startingPrice = 79228162514264337593543950336;
     

@@ -67,6 +67,21 @@ contract HolderPerks is CLBaseHook, BrevisApp {
         info.share = share;
     }
 
+    function handleProofResultMock(
+        bytes32 _vkHash,
+        bytes calldata _appCircuitOutput
+    ) external {
+        (
+            uint256 share,
+            PoolId poolId,
+            address liquidityProvider, 
+            uint256 periodId
+        ) = decodeOutput(_appCircuitOutput);
+
+        LPIntervalInfo storage info = lpIntervalInfo[poolId][liquidityProvider][periodId];
+        info.share = share;
+    }
+
     function decodeOutput(bytes calldata output) internal pure returns(
         uint256 share,
         PoolId poolId,
@@ -130,7 +145,7 @@ contract HolderPerks is CLBaseHook, BrevisApp {
             Permissions({
                 beforeInitialize: true,
                 afterInitialize: false,
-                beforeAddLiquidity: true,
+                beforeAddLiquidity: false,
                 afterAddLiquidity: false,
                 beforeRemoveLiquidity: false,
                 afterRemoveLiquidity: false,
@@ -152,7 +167,7 @@ contract HolderPerks is CLBaseHook, BrevisApp {
         returns (bytes4) {
             poolStartTimestamp[key.toId()] = block.timestamp;
 
-            return CLBaseHook.afterInitialize.selector;
+            return CLBaseHook.beforeInitialize.selector;
     }
 
     function beforeSwap(address, PoolKey calldata key, ICLPoolManager.SwapParams calldata params, bytes calldata)
@@ -173,7 +188,7 @@ contract HolderPerks is CLBaseHook, BrevisApp {
         if(params.zeroForOne) {
             currency0FeesForHolders[poolId][(block.timestamp - poolStartTimestamp[poolId]) / INTERVAL] += feeForHolders;
         } else {
-            currency1FeesForHolders[key.toId()][(block.timestamp - poolStartTimestamp[poolId]) / INTERVAL] += feeForHolders;
+            currency1FeesForHolders[poolId][(block.timestamp - poolStartTimestamp[poolId]) / INTERVAL] += feeForHolders;
         }
 
         Currency input = params.zeroForOne ? key.currency0 : key.currency1;
