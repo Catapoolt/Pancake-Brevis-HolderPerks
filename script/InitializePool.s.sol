@@ -18,7 +18,7 @@ contract InitializePool is Script {
     address constant CLPOOLMANAGER = 0x969D90aC74A1a5228b66440f8C8326a8dA47A5F9;
     address constant mCAKE = 0x5e799ab7E65bB718B545C76Ac9E6E74fc880a1D0;
     address constant mUSDC = 0x7E421Eee45038D0Ea1aD51Aaf1e5784c4e0765D0;
-    address constant HOOK = 0xD517d30Da02f63cD57128A0E00268AEC40C3ea5c;
+    address constant HOOK = 0x0e8d3fD384ff2089E9bb7D06Ce37508ab1bcd032;
 
     ICLPoolManager manager = ICLPoolManager(CLPOOLMANAGER);
 

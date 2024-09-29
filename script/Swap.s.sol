@@ -23,7 +23,7 @@ contract Swap is Script {
     address constant CLPOOLMANAGER = 0x969D90aC74A1a5228b66440f8C8326a8dA47A5F9;
     address constant mCAKE = 0x5e799ab7E65bB718B545C76Ac9E6E74fc880a1D0;
     address constant mUSDC = 0x7E421Eee45038D0Ea1aD51Aaf1e5784c4e0765D0;
-    address constant HOOK = 0xD517d30Da02f63cD57128A0E00268AEC40C3ea5c;
+    address constant HOOK = 0x0e8d3fD384ff2089E9bb7D06Ce37508ab1bcd032;
     address constant PERMIT2 = 0x31c2F6fcFf4F8759b3Bd5Bf0e1084A055615c768;
     address constant recipient = 0x3195ee2A3c4Cc67f448767faAdb061472e670223;
 

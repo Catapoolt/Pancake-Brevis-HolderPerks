@@ -28,8 +28,6 @@ contract HolderPerks is CLBaseHook, BrevisApp {
 
     struct LPIntervalInfo {
         uint256 share;
-        uint256 alreadyClaimed0;
-        uint256 alreadyClaimed1;
         uint256 lastTotalCurrency0Fees;
         uint256 lastTotalCurrency1Fees;
     }
@@ -58,12 +56,12 @@ contract HolderPerks is CLBaseHook, BrevisApp {
 
         (
             uint256 share,
-            PoolId poolId,
+            bytes32 poolId,
             address liquidityProvider, 
             uint256 periodId
         ) = decodeOutput(_appCircuitOutput);
 
-        LPIntervalInfo storage info = lpIntervalInfo[poolId][liquidityProvider][periodId];
+        LPIntervalInfo storage info = lpIntervalInfo[PoolId.wrap(poolId)][liquidityProvider][periodId];
         info.share = share;
     }
 
@@ -73,32 +71,35 @@ contract HolderPerks is CLBaseHook, BrevisApp {
     ) external {
         (
             uint256 share,
-            PoolId poolId,
+            bytes32 poolId,
             address liquidityProvider, 
             uint256 periodId
         ) = decodeOutput(_appCircuitOutput);
 
-        LPIntervalInfo storage info = lpIntervalInfo[poolId][liquidityProvider][periodId];
+        LPIntervalInfo storage info = lpIntervalInfo[PoolId.wrap(poolId)][liquidityProvider][periodId];
         info.share = share;
     }
 
     function decodeOutput(bytes calldata output) internal pure returns(
         uint256 share,
-        PoolId poolId,
+        bytes32 poolId,
         address liquidityProvider, 
         uint256 periodId
     ) {
-        (share, poolId, liquidityProvider, periodId) = abi.decode(output, (uint256, PoolId, address, uint256));
+        share = uint256(bytes32(output[0:32]));
+        poolId = bytes32(output[32:64]);
+        liquidityProvider = address(bytes20(output[64:84]));
+        periodId = uint256(bytes32(output[84:116]));
     }
 
-    function withdrawHolderFees(PoolKey calldata key, uint256 interval, uint256 amount0, uint256 amount1) external {
+    function withdrawHolderFees(PoolKey calldata key, uint256 interval, bool claim0, bool claim1) external {
         address liquidityProvider = msg.sender;
         PoolId poolId = key.toId();
         LPIntervalInfo storage info = lpIntervalInfo[poolId][liquidityProvider][interval];
 
         if(info.share == 0) revert NotEligibleForFees();
 
-        if(amount0 > 0) {
+        if(claim0) {
             uint256 currency0Fees = currency0FeesForHolders[poolId][interval];
 
             if(currency0Fees > 0) {
@@ -113,12 +114,13 @@ contract HolderPerks is CLBaseHook, BrevisApp {
                 }
 
                 uint256 toReceive0 = feesToClaimFrom / info.share;
+                info.lastTotalCurrency0Fees = currency0Fees;
 
                 IERC20Minimal(Currency.unwrap(key.currency0)).transfer(msg.sender, toReceive0);
             }
         }
         
-        if(amount1 > 0) {
+        if(claim1) {
             uint256 currency1Fees = currency1FeesForHolders[poolId][interval];
 
             if(currency1Fees > 0) {
@@ -133,6 +135,7 @@ contract HolderPerks is CLBaseHook, BrevisApp {
                 }
 
                 uint256 toReceive1 = feesToClaimFrom / info.share;
+                info.lastTotalCurrency1Fees = currency1Fees;
 
                 IERC20Minimal(Currency.unwrap(key.currency1)).transfer(msg.sender, toReceive1);
             }
