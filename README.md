@@ -1,6 +1,6 @@
 # HolderPerks
 
-HolderPerks is a hook Pancakeswap V4 contract that allows liquidity providers to earn additional swap fees
+HolderPerks is a Pancakeswap V4 hook contract that allows liquidity providers to earn additional swap fees
 based on holding a certain token. Brevis is used to compute a holding power based on
 the amount of tokens held per block during the pre-configured time interval set at
 pool initialization. The user requests the proof for each such period that dictates
