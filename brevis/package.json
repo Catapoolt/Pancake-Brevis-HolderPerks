@@ -1,0 +1,19 @@
+{
+  "name": "catapoolt-brevis-typescript",
+  "version": "0.0.1",
+  "description": "Catapoolt Brevis integration",
+  "scripts": {
+    "start": "ts-node lp_fees_wBNB/index.ts"
+  },
+  "author": "Mihai A.",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.3"
+  },
+  "dependencies": {
+    "@covalenthq/client-sdk": "^2.1.1",
+    "brevis-sdk-typescript": "^1.2.5",
+    "ethers": "^5.5.1"
+  }
+}
